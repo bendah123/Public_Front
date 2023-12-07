@@ -1,0 +1,69 @@
+from domain.order import Order, OrderCancel
+from typing import List
+import paho.mqtt.publish as publish
+import paho.mqtt.client as mqtt
+import config 
+from domain.order import Order, OrderCancel
+from domain.messages import Ordersent, OrderCancelled
+import paho.mqtt.publish as publish
+import paho.mqtt.client as mqtt
+
+  
+def OrderSendP(order: Order):
+        __message_publish(config.mqtt_topic_on_order_send, Ordersent(order.order_id).to_json())
+def OrderCancelledP(order: Order):
+        __message_publish(config.mqtt_topic_on_order_canceled, OrderCancelled(order.order_id).to_json())
+def get_inventory_catalog():
+    url = config.url1
+    response = requests.get(url)
+    if response.status_code == 200:
+        catalog = response.json()
+        return catalog
+    else:
+        return None
+def get_order_status(order_id):
+    topic = "public-front/order-status"
+    payload = order_id
+
+    __message_publish(topic, payload)
+    
+def PostOrder(order_id, order_content):
+    topic = config.mqtt_topic_post_order
+    payload = order_content
+
+    __message_publish(topic, payload)
+
+    response = {
+        "status_code": 201,
+    }
+    return response
+
+def delete_order(order_id):
+    topic = "public-front/order-delete"
+    payload = order_id
+
+    __message_publish(topic, payload)
+
+    response = {
+        "status_code": 204
+    }
+    return response
+
+
+def __message_publish(topic: str, payload: str):
+
+    print("Out going message")
+    print(F"Topic: {topic}")
+    print(F"Payload: {payload}")
+
+    publish.single(
+        topic, 
+        payload=payload, 
+        qos=1, #least once
+        retain=False, 
+        hostname=config.mqtt_host,
+        port=config.mqtt_port, 
+        client_id=config.mqtt_client_id, 
+        auth= {'username' : config.mqtt_username, 'password' : config.mqtt_password}, 
+        tls=None,
+        protocol=mqtt.MQTTv5, transport=config.mqtt_transport) 
