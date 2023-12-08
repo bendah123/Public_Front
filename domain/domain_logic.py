@@ -8,11 +8,11 @@ from domain.messages import Ordersent, OrderCancelled
 import paho.mqtt.publish as publish
 import paho.mqtt.client as mqtt
 
-  
+  '''
 def OrderSendP(order: Order):
         __message_publish(config.mqtt_topic_on_order_send, Ordersent(order.order_id).to_json())
 def OrderCancelledP(order: Order):
-        __message_publish(config.mqtt_topic_on_order_canceled, OrderCancelled(order.order_id).to_json())
+        __message_publish(config.mqtt_topic_on_order_canceled, OrderCancelled(order.order_id).to_json())'''
 def get_inventory_catalog():
     url = config.url1
     response = requests.get(url)
@@ -22,26 +22,33 @@ def get_inventory_catalog():
     else:
         return None
 def get_order_status(order_id):
-    topic = "public-front/order-status"
-    payload = order_id
-
-    __message_publish(topic, payload)
+    url = config.url2
+    response = requests.get(url)
+    if response.status_code == 200:
+        status = response.json()
+        return status
+    else:
+        return None 
     
 def PostOrder(order_id, order_content):
-    topic = config.mqtt_topic_post_order
+    topic = config.mqtt_topic_on_order_send
     payload = order_content
-
+    #deser order_content then add order_id then ser again
+    content = json.loads(order_content)
+    content["order_id"] = order_id
+    updated_order_content = json.dumps(content)
+    payload = updated_order_content
     __message_publish(topic, payload)
 
     response = {
-        "status_code": 201,
+        "status_code": 201, 
     }
     return response
 
 def delete_order(order_id):
-    topic = "public-front/order-delete"
-    payload = order_id
-
+    topic =config.mqtt_topic_on_order_canceled
+    payload = order_id 
+    #here ser order id before passing it
     __message_publish(topic, payload)
 
     response = {

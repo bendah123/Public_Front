@@ -4,6 +4,7 @@ import domain.domain_logic as dl
 import config
 from domain.order import Order, OrderCancel
 import requests
+import uuid
 
 app = Flask(__name__)
 app.config['MQTT_BROKER_URL'] = config.mqtt_host  # use the free broker from HIVEMQ
@@ -17,6 +18,24 @@ mqtt = Mqtt(app)
 
 
 
-@app.route("/")
+@app.route("/inventory")
 def Get():
-    return dl.ListInventory()
+    return dl.get_inventory_catalog()
+
+@app.route("/order")
+def Get(id):
+    return dl.get_order_status(id)
+
+@app.route("/order")
+def Post(payload):
+    order_id=str(uuid.uuid4())
+    #check in doc id it will be aut ser or not 
+    return dl.PostOrder(order_id,payload)
+
+@app.route("/order")
+def Delete(id):
+    return dl.delete_order(id)
+
+
+
+
