@@ -29,7 +29,8 @@ def Get(id):
 @app.route("/order")
 def Post(payload):
     order_id=str(uuid.uuid4())
-    #check in doc id it will be aut ser or not 
+    #check in doc id it will be aut ser or not  
+    serialized_payload = json.dumps(payload)
     return dl.PostOrder(order_id,payload)
 
 @app.route("/order")

@@ -8,11 +8,7 @@ from domain.messages import Ordersent, OrderCancelled
 import paho.mqtt.publish as publish
 import paho.mqtt.client as mqtt
 
-  '''
-def OrderSendP(order: Order):
-        __message_publish(config.mqtt_topic_on_order_send, Ordersent(order.order_id).to_json())
-def OrderCancelledP(order: Order):
-        __message_publish(config.mqtt_topic_on_order_canceled, OrderCancelled(order.order_id).to_json())'''
+
 def get_inventory_catalog():
     url = config.url1
     response = requests.get(url)
@@ -47,7 +43,7 @@ def PostOrder(order_id, order_content):
 
 def delete_order(order_id):
     topic =config.mqtt_topic_on_order_canceled
-    payload = order_id 
+    payload= json.dumps(order_id)
     #here ser order id before passing it
     __message_publish(topic, payload)
 
