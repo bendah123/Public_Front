@@ -26,20 +26,10 @@ def get_order_status(order_id):
     else:
         return None 
     
-def PostOrder(order_id, order_content):
-    topic = config.mqtt_topic_on_order_send
-    payload = order_content
-    #deser order_content then add order_id then ser again
-    content = json.loads(order_content)
-    content["order_id"] = order_id
-    updated_order_content = json.dumps(content)
-    payload = updated_order_content
-    __message_publish(topic, payload)
-
-    response = {
-        "status_code": 201, 
-    }
-    return response
+def PostOrder(order: Order):
+    topic = config.mqtt_topic_on_order_send    
+    __message_publish(topic, order.to_json())
+    return
 
 def delete_order(order_id):
     topic =config.mqtt_topic_on_order_canceled

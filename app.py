@@ -1,10 +1,12 @@
-from flask import Flask
+from flask import Flask,request, Response
 from flask_mqtt import Mqtt
 import domain.domain_logic as dl
 import config
 from domain.order import Order, OrderCancel
 import requests
 import uuid
+
+
 
 app = Flask(__name__)
 app.config['MQTT_BROKER_URL'] = config.mqtt_host  # use the free broker from HIVEMQ
@@ -26,12 +28,15 @@ def Get():
 def Get(id):
     return dl.get_order_status(id)
 
-@app.route("/order")
-def Post(payload):
-    order_id=str(uuid.uuid4())
-    #check in doc id it will be aut ser or not  
-    serialized_payload = json.dumps(payload)
-    return dl.PostOrder(order_id,payload)
+@app.route('/order', methods=['POST'])
+def Post():
+    data = request.json #access json which contain order information
+    order = Order.from_json(data) # deserialize order      
+    order.order_id = str(uuid.uuid4()) # generate uuid and set it to given order
+    dl.PostOrder(order) # call domain logic
+    resp = Response("{}", status=201, mimetype='application/json')
+    resp.headers['location'] = '/order/' + order.order_id
+    return resp
 
 @app.route("/order")
 def Delete(id):
