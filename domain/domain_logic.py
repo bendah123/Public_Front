@@ -60,3 +60,4 @@ def __message_publish(topic: str, payload: str):
         auth= {'username' : config.mqtt_username, 'password' : config.mqtt_password}, 
         tls=None,
         protocol=mqtt.MQTTv5, transport=config.mqtt_transport) 
+
