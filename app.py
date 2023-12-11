@@ -2,7 +2,7 @@ from flask import Flask,request, Response
 from flask_mqtt import Mqtt
 import domain.domain_logic as dl
 import config
-from domain.order import Order, OrderCancel
+from domain.order import Order
 import requests
 import uuid
 
