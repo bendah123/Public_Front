@@ -1,9 +1,8 @@
-from domain.order import Order, OrderCancel
 from typing import List
 import paho.mqtt.publish as publish
 import paho.mqtt.client as mqtt
 import config 
-from domain.order import Order, OrderCancel
+from domain.order import Order, OrderItem
 from domain.messages import Ordersent, OrderCancelled
 import paho.mqtt.publish as publish
 import paho.mqtt.client as mqtt
