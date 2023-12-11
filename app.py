@@ -21,11 +21,11 @@ mqtt = Mqtt(app)
 
 
 @app.route("/inventory")
-def Get():
+def GetInventory():
     return dl.get_inventory_catalog()
 
 @app.route("/order")
-def Get(id):
+def GetOrderStatus(id):
     return dl.get_order_status(id)
 
 @app.route('/order', methods=['POST'])
