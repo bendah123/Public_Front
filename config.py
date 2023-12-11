@@ -1,5 +1,5 @@
 mqtt_host = 'el6icz3en0fo-scdyi8ws59yk.cedalo.dev'
-mqtt_port = '1883'
+mqtt_port = 1883
 mqtt_transport = 'tcp' #tcp or websockets. Use websockets if issues with firewall
 mqtt_client_id ='ds-public-front'
 mqtt_username = 'ds-public-front'
