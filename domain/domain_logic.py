@@ -6,7 +6,7 @@ from domain.order import Order, OrderItem
 from domain.messages import Ordersent, OrderCancelled
 import paho.mqtt.publish as publish
 import paho.mqtt.client as mqtt
-
+import requests
 
 def get_inventory_catalog():
     url = config.url1
