@@ -2,7 +2,7 @@ from flask import Flask,request, Response
 from flask_mqtt import Mqtt
 import domain.domain_logic as dl
 import config
-from domain.order import Order, OrderCancel
+from domain.order import Order
 import requests
 import uuid
 
@@ -22,24 +22,33 @@ mqtt = Mqtt(app)
 
 @app.route("/inventory")
 def Get():
+    print("")
+    print("\033[93mPublic Front - GET /inventory \033[00m")
     return dl.get_inventory_catalog()
 
-@app.route("/order")
-def Get(id):
+@app.route("/order/<id>")
+def GetOrder(id):
+    print("")
+    print("\033[93mPublic Front - GET /order/" + id + "\033[00m")
     return dl.get_order_status(id)
 
 @app.route('/order', methods=['POST'])
 def Post():
-    data = request.json #access json which contain order information
-    order = Order.from_json(data) # deserialize order      
+    print("")
+    print("\033[93mPublic Front - POST /order\033[00m")
+    data = str(request.json).replace("'", '"') #access json which contain order information
+    print("\033[93mPayload: " + data + "\033[00m")
+    order = Order.from_json(str(data)) # deserialize order      
     order.order_id = str(uuid.uuid4()) # generate uuid and set it to given order
     dl.PostOrder(order) # call domain logic
-    resp = Response("{}", status=201, mimetype='application/json')
+    resp = Response('{"order_id" : "' + order.order_id + '"}', status=201, mimetype='application/json')
     resp.headers['location'] = '/order/' + order.order_id
     return resp
 
-@app.route("/order")
+@app.route("/order/<id>", methods=['DELETE'])
 def Delete(id):
+    print("")
+    print("\033[93mPublic Front - DELETE /order/" + id + "\033[00m")
     return dl.delete_order(id)
 
 

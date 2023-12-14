@@ -6,7 +6,7 @@ from domain.order import Order, OrderItem
 from domain.messages import Ordersent, OrderCancelled
 import paho.mqtt.publish as publish
 import paho.mqtt.client as mqtt
-
+import requests
 
 def get_inventory_catalog():
     url = config.url1
@@ -18,7 +18,7 @@ def get_inventory_catalog():
         return None
 def get_order_status(order_id):
     url = config.url2
-    response = requests.get(url)
+    response = requests.get(url + "/" + order_id)
     if response.status_code == 200:
         status = response.json()
         return status
@@ -32,9 +32,7 @@ def PostOrder(order: Order):
 
 def delete_order(order_id):
     topic =config.mqtt_topic_on_order_canceled
-    payload= json.dumps(order_id)
-    #here ser order id before passing it
-    __message_publish(topic, payload)
+    __message_publish(topic, '{"order_id" : "' + order_id + '"}')
 
     response = {
         "status_code": 204
@@ -43,10 +41,10 @@ def delete_order(order_id):
 
 
 def __message_publish(topic: str, payload: str):
-
-    print("Out going message")
-    print(F"Topic: {topic}")
-    print(F"Payload: {payload}")
+    print("")
+    print("\033[93mPublic Front - Outgoing message\033[00m")
+    print(F"\033[93mTopic: {topic}\033[00m")
+    print(F"\033[93mPayload: {payload}\033[00m")
 
     publish.single(
         topic, 
