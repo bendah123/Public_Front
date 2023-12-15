@@ -1,7 +1,11 @@
 # Public-Front service 
 
 Distributed Systems, Fall 2023
-
+#Stucture 
+domain contains domain logic
+app.py is service start entry point. It contains topic subscriptions
+_config_sample is configuration file example. Should be copied and named as config.py
+requirements contain all the requirements we need 
 # Visual Studio Code 
 
 Setup Flask to Visual Studio Code
